@@ -1,0 +1,128 @@
+<!-- Page Content -->
+<div class="content">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form name="customerPayForm" [formGroup]="customerPayForm" autocomplete="off" (ngSubmit)="customerPay(this.platformName)">
+        <!-- Payment -->
+        <div class="block">
+          <div class="block-header block-header-default">
+            <h3 class="block-title">3. Payment</h3>
+          </div>
+          <div class="block-content block-content-full">
+            <div class="mx-0 mx-md-6 mx-xl-6">
+
+              <div *ngIf="paymentSuccess" class="alert alert-success alert-dismissable" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <!--                Payment successfully !!-->
+                <p class="mb-0"> {{ paymentSuccessMsg }} </p>
+              </div>
+              <div *ngIf="paymentError" class="alert alert-danger alert-dismissable" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <!--                Payment successfully !!-->
+                <p class="mb-0"> {{ paymentErrorMsg }} </p>
+              </div>
+
+              <div class="form-group">
+                <label for="checkoutName">Full Name</label>
+                <input type="text" class="form-control" formControlName="checkoutName"
+                       id="checkoutName" placeholder="Deogratias Alison"
+                       [ngClass]="{'is-invalid':customerPayForm.get('checkoutName').touched &&
+                       customerPayForm.get('checkoutName').invalid,
+                       'is-valid':customerPayForm.get('checkoutName').valid}">
+                <div *ngIf="customerPayForm.get('checkoutName').invalid && customerPayForm.get('checkoutName').touched"
+                     class="invalid-feedback">
+                  <div *ngIf="customerPayForm.get('checkoutName').errors.required">Required Name</div>
+                </div>
+              </div>
+
+              <div class="row">
+
+                <div *ngIf="error" class="col-12">
+                  <!--                  platformStatus && !error-->
+                  <div class="form-group text-danger">
+                    <div class="input-group">{{platformMessage}}</div>
+                  </div>
+                </div>
+                <div class="col-8">
+                  <div class="form-group">
+                    <label for="phoneNumber">Phone number</label>
+                    <div class="input-group">
+                      <input type="tel" class="form-control" formControlName="phoneNumber"
+                             id="phoneNumber" placeholder="0xxx xxx xxx"
+                             [ngClass]="{'is-invalid':customerPayForm.get('phoneNumber').touched &&
+                       customerPayForm.get('phoneNumber').invalid,
+                       'is-valid':customerPayForm.get('phoneNumber').valid}"
+                             (blur)="(customerPayForm.get('phoneNumber').valid)? findPlatformNumber() : null">
+                      <div class="input-group-append">
+                        <span *ngIf="platformName?.code" class="input-group-text">
+                          {{platformName?.name}}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div *ngIf="customerPayForm.get('phoneNumber').touched && customerPayForm.get('phoneNumber').invalid" class="invalid-feedback">
+                      <div *ngIf="customerPayForm.get('phoneNumber').errors.required">Phone number is required</div>
+                      <div *ngIf="customerPayForm.get('phoneNumber').errors.minlength || customerPayForm.get('phoneNumber').errors.maxlength">
+                        Phone number must contain 10 digits only
+                      </div>
+                    </div>
+                    <!--                    <div *ngIf="errorMsg!== undefined" class="invalid-feedback">-->
+                    <!--                      <div *ngIf="errorMsg!== undefined">{{errorMsg}}</div>-->
+                    <!--                    </div>-->
+                  </div>
+                </div>
+
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="securityCode">Password</label>
+                    <input type="password" class="form-control" formControlName="securityCode"
+                           id="securityCode" placeholder="****"
+                           [ngClass]="{'is-invalid':customerPayForm.get('securityCode').touched &&
+                           customerPayForm.get('securityCode').invalid,
+                           'is-valid':customerPayForm.get('securityCode').valid}">
+                    <div *ngIf="customerPayForm.get('securityCode').touched && customerPayForm.get('securityCode').invalid"
+                         class="invalid-feedback">
+                      <div *ngIf="customerPayForm.get('securityCode').errors.required">Security code is required</div>
+                      <div *ngIf="customerPayForm.get('securityCode').errors.minlength || customerPayForm.get('securityCode').errors.maxlength">
+                        Security code must contain 4 digits only
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="block-content-full">
+                <table class="table table-borderless table-hover table-vcenter">
+                  <tbody>
+                  <tr class="bg-success-light" [ngClass]="{'bg-danger-light': paymentError}">
+                    <td class="text-right" colspan="3">
+                      <span class="h4 font-w600">TOTAL</span>
+                    </td>
+                    <td class="text-right">
+                      <span class="h4 font-w600 text-success" [ngClass]="{'text-danger': paymentError}">$100</span>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="text-right push">
+                <button type="submit" class="btn btn-sm btn-primary"
+                        [disabled]="customerPayForm.invalid || !this.platformStatus || paymentError">
+                  <i class="fa fa-check mr-1"></i> Complete Order
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <!-- END Payment -->
+      </form>
+    </div>
+  </div>
+</div>
+<!-- END Page Content -->
