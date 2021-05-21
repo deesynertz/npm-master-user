@@ -10,35 +10,38 @@ import {PaymentService} from '../../services/payment.service';
 })
 export class PayComponent implements OnInit {
 
+  constructor(
+    private paymentService: PaymentService
+  ) { }
+
   paymentSuccess = false;
   paymentSuccessMsg;
   paymentError = false;
   paymentErrorMsg;
+  othersError = false;
+  othersErrorMsg;
 
   platformStatus = false;
   platformName: preparePhoneModel;
   platformMessage;
   error = this.platformStatus;
 
-  constructor(
-    private paymentService: PaymentService
-  ) { }
+  customerPayForm: FormGroup = new FormGroup({
+    checkoutName: new FormControl('Deogratias Alison', Validators.required),
+    phoneNumber: new FormControl('0744004897',
+      [Validators.required, Validators.minLength(10),
+        Validators.maxLength(10)
+      ]),
+    securityCode: new FormControl('2607', [Validators.required,
+      Validators.minLength(4), Validators.maxLength(4)]),
+  });
 
   ngOnInit(): void {
   }
 
-  customerPayForm: FormGroup = new FormGroup({
-    checkoutName: new FormControl('Deogratias Alison', Validators.required),
-    phoneNumber: new FormControl('',
-      [Validators.required,Validators.minLength(10),
-        Validators.maxLength(10)
-      ]),
-    securityCode: new FormControl('', [Validators.required,
-      Validators.minLength(4), Validators.maxLength(4)]),
-  });
-
+  // tslint:disable-next-line: typedef
   findPlatformNumber() {
-    let phoneNumber = this.customerPayForm.value.phoneNumber;
+    const phoneNumber = this.customerPayForm.value.phoneNumber;
 
     this.paymentService.validatePhoneNumber(phoneNumber).subscribe((response: defaultResponse) => {
       if (response.success){
@@ -53,27 +56,23 @@ export class PayComponent implements OnInit {
     });
   }
 
+  // tslint:disable-next-line: typedef
   customerPay(platform: preparePhoneModel) {
     if (this.customerPayForm.valid){
-      const amount = 100;
+      const amount = 28000;
       const chargeData = {
-        oder_details: {
-          enterpriseID: 'DEE0215',
-          _id: 5,
-          total_item: 3,
-          amount: amount },
-        user:{
+        oder_details: { _id: 8, total_item: 100, amount },
+        user: {
           phone: this.customerPayForm.value.phoneNumber,
           password: this.customerPayForm.value.securityCode,
-          fullName:this.customerPayForm.value.checkoutName },
+          fullName: this.customerPayForm.value.checkoutName
+        },
         others: {
-          platformCode: platform.code,
-          platformName: platform.name,
-          platformID: platform.ID
+          platformCode: platform.code, platformName: platform.name, platformID: platform.ID
         }
-      }
+      };
 
-      if(platform.phoneNo === chargeData.user.phone){
+      if (platform.phoneNo === chargeData.user.phone){
         this.paymentService.initiatePayment(chargeData).subscribe((response) => {
           if (response.success){
             this.paymentSuccess    = response.success;
@@ -81,8 +80,13 @@ export class PayComponent implements OnInit {
 
             this.customerPayForm.reset();
           }else {
-            this.paymentError     = !response.success;
-            this.paymentErrorMsg  = response.object;
+            if (response.status === 503) {
+              this.othersError = !response.success;
+              this.othersErrorMsg = response.object;
+            }else {
+              this.paymentError     = !response.success;
+              this.paymentErrorMsg  = response.object;
+            }
           }
         });
       } else {
