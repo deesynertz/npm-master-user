@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {defaultResponse, preparePhoneModel} from '../../model/payment.model';
+import {DefaultResponse, PreparePhoneModel} from '../../model/payment.model';
 import {PaymentService} from '../../services/payment.service';
 
 @Component({
@@ -22,17 +22,17 @@ export class PayComponent implements OnInit {
   othersErrorMsg;
 
   platformStatus = false;
-  platformName: preparePhoneModel;
+  platformName: PreparePhoneModel;
   platformMessage;
   error = this.platformStatus;
 
   customerPayForm: FormGroup = new FormGroup({
-    checkoutName: new FormControl('Deogratias Alison', Validators.required),
-    phoneNumber: new FormControl('0744004897',
+    checkoutName: new FormControl('', Validators.required),
+    phoneNumber: new FormControl('',
       [Validators.required, Validators.minLength(10),
         Validators.maxLength(10)
       ]),
-    securityCode: new FormControl('2607', [Validators.required,
+    securityCode: new FormControl('', [Validators.required,
       Validators.minLength(4), Validators.maxLength(4)]),
   });
 
@@ -43,7 +43,7 @@ export class PayComponent implements OnInit {
   findPlatformNumber() {
     const phoneNumber = this.customerPayForm.value.phoneNumber;
 
-    this.paymentService.validatePhoneNumber(phoneNumber).subscribe((response: defaultResponse) => {
+    this.paymentService.validatePhoneNumber(phoneNumber).subscribe((response: DefaultResponse) => {
       if (response.success){
         this.platformStatus = response.success;
         this.error = !this.platformStatus;
@@ -57,11 +57,11 @@ export class PayComponent implements OnInit {
   }
 
   // tslint:disable-next-line: typedef
-  customerPay(platform: preparePhoneModel) {
+  customerPay(platform: PreparePhoneModel) {
     if (this.customerPayForm.valid){
-      const amount = 28000;
+      const amount = 6789;
       const chargeData = {
-        oder_details: { _id: 8, total_item: 100, amount },
+        oder_details: { _id: 6, total_item: 100, amount },
         user: {
           phone: this.customerPayForm.value.phoneNumber,
           password: this.customerPayForm.value.securityCode,
@@ -71,6 +71,8 @@ export class PayComponent implements OnInit {
           platformCode: platform.code, platformName: platform.name, platformID: platform.ID
         }
       };
+
+      // console.log(chargeData);
 
       if (platform.phoneNo === chargeData.user.phone){
         this.paymentService.initiatePayment(chargeData).subscribe((response) => {

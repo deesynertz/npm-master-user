@@ -1,14 +1,17 @@
 <!-- Page Content -->
-<div class="content">
+<div class="content content-body">
   <div class="row justify-content-center">
     <div class="col-sm-12 col-md-6 col-lg-5">
       <form name="customerPayForm" [formGroup]="customerPayForm" autocomplete="off" (ngSubmit)="customerPay(this.platformName)">
         <!-- Payment -->
-        <div class="block">
-          <div class="block-header block-header-default">
-            <h3 class="block-title">3. Payment</h3>
+        <div class="block block-pay mt-7">
+          <div class="row justify-content-center">
+            <div class="pt-4">
+              <!-- <h3 class="block-title text-center">MSP PAYMENT</h3> -->
+              <img class="text-center" src="assets/media/brand/logo2.png" alt="MSP LOGO">
+            </div>
           </div>
-          <div class="block-content block-content-full">
+          <div class="block-content block-content-full p-3">
             <div class="mx-0 mx-md-6 mx-xl-6">
 
               <div *ngIf="paymentSuccess" class="alert alert-success alert-dismissable" role="alert">
@@ -58,9 +61,10 @@
                        customerPayForm.get('phoneNumber').invalid,
                        'is-valid':customerPayForm.get('phoneNumber').valid}"
                              (keyup)="(customerPayForm.get('phoneNumber').touched ||customerPayForm.get('phoneNumber').valid)? findPlatformNumber() : null">
-                      <div class="input-group-append">
-                        <span *ngIf="platformName?.code && customerPayForm.get('phoneNumber').valid" class="input-group-text">
-                          {{platformName?.name}}
+                      <div class="input-group-append" >
+                        <span *ngIf="platformName?.code && customerPayForm.get('phoneNumber').valid" class="input-group-addon">
+                          <img [src]="'assets/media/brand/'+platformName?.logo" 
+                          class="input-group-image">
                         </span>
                       </div>
                     </div>
@@ -104,20 +108,19 @@
                       <span class="h4 font-w600">TOTAL</span>
                     </td>
                     <td class="text-right">
-                      <span class="h4 font-w600 text-success" [ngClass]="{'text-danger': paymentError}">$100</span>
+                      <span class="h4 font-w600 text-success" [ngClass]="{'text-danger': paymentError}">{{6789 | currency: 'TZS '}}</span>
                     </td>
                   </tr>
                   </tbody>
                 </table>
               </div>
 
-              <div class="block-content-full">
+              <div class="block-content-full pb-4">
                   <button type="submit" class="btn btn-block btn-primary"
                           [disabled]="customerPayForm.invalid || !this.platformStatus">
                     <i class="fa far-check mr-1"></i> Complete Order
                   </button>
               </div>
-
 
             </div>
           </div>
@@ -125,6 +128,22 @@
         <!-- END Payment -->
       </form>
     </div>
+  </div>
+
+  <div class="row justify-content-center">
+     <div class="col-sm-12 col-md-6 col-lg-5">
+        <div class="block">
+          <div class="block-header block-header-default">
+            <h5 class="block-title">VODACOME &nbsp;<span>phone: 0756739238</span> <small>  pass: 1234</small></h5>
+          </div>
+          <div class="block-header block-header-default">
+            <h5 class="block-title">TIGO: &nbsp;<span>phone: 0654004897</span> <small>  pass: 5678</small></h5>
+          </div>
+          <div class="block-header block-header-default">
+            <h5 class="block-title">HALOPESA: &nbsp;<span>phone: 0624004897 </span> <small>  pass: 2607</small></h5>
+          </div>
+        </div>
+     </div>
   </div>
 </div>
 <!-- END Page Content -->

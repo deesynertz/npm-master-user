@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { defaultResponse } from '../model/payment.model';
+import { DefaultResponse } from '../model/payment.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { initiatePaymentUrl, preparePhoneIdUrl } from '../config/api';
 
@@ -11,22 +11,22 @@ export class PaymentService {
 
   constructor(private http: HttpClient) { }
 
-  public token = 'pk_qe47h0nra6lbfzrth641ndsztmm9hh_1';
+  private publicKey = 'sk_tee0243vk8x405a1dv23n18kk5h3ha_1';
 
   // tslint:disable-next-line: typedef
   createAutorizationHeader(headers: HttpHeaders){
     headers.append('Content-Type', 'application/json');
-    headers.append('x-api-key', this.token);
+    headers.append('x-api-key', this.publicKey);
   }
 
   // check/:phoneID
-  validatePhoneNumber(phoneID: number): Observable<defaultResponse> {
-    return this.http.get<defaultResponse>(`${preparePhoneIdUrl}` + phoneID);
+  validatePhoneNumber(phoneID: number): Observable<DefaultResponse> {
+    return this.http.get<DefaultResponse>(`${preparePhoneIdUrl}` + phoneID);
   }
 
   initiatePayment(chargeData): Observable<any> {
     const header = new HttpHeaders({ 'Content-Type': 'application/json',
-      'x-api-key': this.token });
+      'x-api-key': this.publicKey });
     this.createAutorizationHeader(header);
     return this.http.post(`${initiatePaymentUrl}`, { chargeData }, {headers: header});
   }

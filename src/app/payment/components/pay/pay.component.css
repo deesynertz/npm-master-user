@@ -1,0 +1,17 @@
+.content-body {
+	/*background-image: url(assets/media/img/);*/
+
+	background-color: #4d7299;
+	height: 100%;
+}
+
+.input-group-image {
+	width: 60px;
+	height: 38px;
+	padding: 0;
+	border-radius: 0 4px 4px 0;
+}
+
+.block-pay {
+	border-radius: 5px;
+}
